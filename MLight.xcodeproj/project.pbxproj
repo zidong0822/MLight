@@ -12,6 +12,9 @@
 		E2C574DB1BEA208A00E29784 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2C574D91BEA208A00E29784 /* Main.storyboard */; };
 		E2C574DD1BEA208A00E29784 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2C574DC1BEA208A00E29784 /* Assets.xcassets */; };
 		E2C574E01BEA208A00E29784 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2C574DE1BEA208A00E29784 /* LaunchScreen.storyboard */; };
+		E2C574EB1BEA20FA00E29784 /* ISColorWheel.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C574E91BEA20FA00E29784 /* ISColorWheel.m */; };
+		E2C574EC1BEA20FA00E29784 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C574EA1BEA20FA00E29784 /* MainViewController.swift */; };
+		E2C574EF1BEA210500E29784 /* RNLoadingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C574EE1BEA210500E29784 /* RNLoadingButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +25,12 @@
 		E2C574DC1BEA208A00E29784 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E2C574DF1BEA208A00E29784 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E2C574E11BEA208A00E29784 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2C574E71BEA20A200E29784 /* MLight-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MLight-Bridging-Header.h"; sourceTree = "<group>"; };
+		E2C574E81BEA20FA00E29784 /* ISColorWheel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISColorWheel.h; sourceTree = "<group>"; };
+		E2C574E91BEA20FA00E29784 /* ISColorWheel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISColorWheel.m; sourceTree = "<group>"; };
+		E2C574EA1BEA20FA00E29784 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		E2C574ED1BEA210500E29784 /* RNLoadingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNLoadingButton.h; sourceTree = "<group>"; };
+		E2C574EE1BEA210500E29784 /* RNLoadingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNLoadingButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,12 +63,18 @@
 		E2C574D41BEA208A00E29784 /* MLight */ = {
 			isa = PBXGroup;
 			children = (
+				E2C574E81BEA20FA00E29784 /* ISColorWheel.h */,
+				E2C574E91BEA20FA00E29784 /* ISColorWheel.m */,
+				E2C574ED1BEA210500E29784 /* RNLoadingButton.h */,
+				E2C574EE1BEA210500E29784 /* RNLoadingButton.m */,
+				E2C574EA1BEA20FA00E29784 /* MainViewController.swift */,
 				E2C574D51BEA208A00E29784 /* AppDelegate.swift */,
 				E2C574D71BEA208A00E29784 /* ViewController.swift */,
 				E2C574D91BEA208A00E29784 /* Main.storyboard */,
 				E2C574DC1BEA208A00E29784 /* Assets.xcassets */,
 				E2C574DE1BEA208A00E29784 /* LaunchScreen.storyboard */,
 				E2C574E11BEA208A00E29784 /* Info.plist */,
+				E2C574E71BEA20A200E29784 /* MLight-Bridging-Header.h */,
 			);
 			path = MLight;
 			sourceTree = "<group>";
@@ -136,7 +151,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E2C574D81BEA208A00E29784 /* ViewController.swift in Sources */,
+				E2C574EB1BEA20FA00E29784 /* ISColorWheel.m in Sources */,
 				E2C574D61BEA208A00E29784 /* AppDelegate.swift in Sources */,
+				E2C574EC1BEA20FA00E29784 /* MainViewController.swift in Sources */,
+				E2C574EF1BEA210500E29784 /* RNLoadingButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,10 +267,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = MLight/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Microduino.MLight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MLight/MLight-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -260,10 +281,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = MLight/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Microduino.MLight;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MLight/MLight-Bridging-Header.h";
 			};
 			name = Release;
 		};
