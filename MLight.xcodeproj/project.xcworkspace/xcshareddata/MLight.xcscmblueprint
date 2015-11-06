@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E9D35DECF1BEC7FEA5343D9E689CF15BD1C23351",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E9D35DECF1BEC7FEA5343D9E689CF15BD1C23351" : 0,
+    "A95086243FDB49D9E7DD398B06E1D6A02CE127C5" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "09ED92DA-1218-47E0-BDE6-BFB9FC691F9A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E9D35DECF1BEC7FEA5343D9E689CF15BD1C23351" : "MLight\/",
+    "A95086243FDB49D9E7DD398B06E1D6A02CE127C5" : "MLight\/MLight\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MLight",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MLight.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zidong0822\/MLight1.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A95086243FDB49D9E7DD398B06E1D6A02CE127C5"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zidong0822\/MLight2.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E9D35DECF1BEC7FEA5343D9E689CF15BD1C23351"
+    }
+  ]
+}

@@ -23,6 +23,7 @@
 @property(nonatomic, assign)BOOL continuous;
 @property(nonatomic, assign)id <ISColorWheelDelegate> delegate;
 
+- (UIColor*)colorWithHexString:(NSString*)stringToConvert;
 - (void)updateImage;
 
 - (void)setTouchPoint:(CGPoint)point;
@@ -30,5 +31,7 @@
 - (void)setCurrentColor:(UIColor*)color;
 
 - (UIColor*)currentColor;
+
+
 
 @end

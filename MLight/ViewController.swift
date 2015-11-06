@@ -13,23 +13,14 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var navgationView:UIView?
     var tableView : UITableView?
     var isScan:Bool = true
-    
     var manager: CBCentralManager!
-    
     var peripheral: CBPeripheral!
-    
     var writeCharacteristic: CBCharacteristic!
-    
     //保存收到的蓝牙设备
-    
     var deviceList:NSMutableArray = NSMutableArray()
-    
     var peripheralList:NSMutableArray = NSMutableArray()
-    
     //服务和特征的UUID
-    
     let kServiceUUID = [CBUUID(string:"FFF0")]
-    
     let kCharacteristicUUID = [CBUUID(string:"FFF6")]
     
 
@@ -39,6 +30,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.manager = CBCentralManager(delegate: self, queue: nil)
         initNavgationView();
         initTableView();
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "colorChange:", name: "colorchange", object: nil)
     }
 
     
@@ -52,7 +44,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.navgationView!.layer.shadowRadius = 4;//阴影半径，默认3
         self.view.addSubview(self.navgationView!)
         
-        let navgationLabel=UILabel(frame: CGRectMake(20,20, self.view.frame.width-100,44))
+        let navgationLabel=UILabel(frame: CGRectMake(55,20, self.view.frame.width-100,44))
         navgationLabel.text = "BLE Device Scan";
         self.view.addSubview(navgationLabel);
         
@@ -61,11 +53,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.view.addSubview(navgationButton);
         
         
-        let scanButton=RNLoadingButton(frame: CGRectMake(self.view.frame.width-160,20,140,44))
-        scanButton .setTitle("   stop", forState: UIControlState.Normal)
+        let scanButton=RNLoadingButton(frame: CGRectMake(self.view.frame.width-90,20,100,44))
+        scanButton .setTitle(" stop", forState: UIControlState.Normal)
         scanButton.loading = true
-        scanButton.hideTextWhenLoading = false
-        scanButton.hideImageWhenLoading = true
+        //scanButton.hideTextWhenLoading = false
+        //scanButton.hideImageWhenLoading = true
         scanButton.setActivityIndicatorAlignment(RNLoadingButtonAlignmentLeft);
         scanButton.addTarget(self, action:"scanBlueTooth:", forControlEvents: UIControlEvents.TouchUpInside)
         scanButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
@@ -97,7 +89,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "newsCell")
                 let  cp = self.deviceList.objectAtIndex(indexPath.row) as!CBPeripheral
         
-                let nameLabel = UILabel(frame: CGRectMake(30, 10, 300, 40));
+                let nameLabel = UILabel(frame: CGRectMake(10, 10, 300, 40));
                 let  textFont = UIFont(name:"Arial", size: 18)
                 nameLabel.font = textFont
                 if(cp.name == nil){
@@ -106,11 +98,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 else{
                     nameLabel.text = cp.name;
                 }
-                let uuidLabel = UILabel(frame: CGRectMake(30, 50, self.view.frame.width, 30));
-                uuidLabel.font = UIFont(name:"Arial", size: 15)
+                let uuidLabel = UILabel(frame: CGRectMake(10, 50, self.view.frame.width, 30));
+                uuidLabel.font = UIFont(name:"Arial", size: 13)
                 uuidLabel.text = cp.identifier.UUIDString
         
-                let detailbutton = UIButton(frame:CGRectMake(self.view.frame.width-80,20, 60, 40))
+                let detailbutton = UIButton(frame:CGRectMake(self.view.frame.width-60,20, 60, 40))
                 detailbutton.setImage(UIImage(named:"go"),forState:UIControlState.Normal)
         
                 cell.contentView.addSubview(nameLabel);
@@ -143,6 +135,23 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 80;
     }
+    func scanBlueTooth(sender:RNLoadingButton!){
+        
+        
+        sender.loading = !sender.loading
+        sender.hideImageWhenLoading = true
+        if(isScan){
+            
+            sender.setTitle("scan", forState: UIControlState.Normal)
+            self.navgationView!.backgroundColor=UIColor(red: 33/255, green: 122/255, blue: 183/255, alpha: 1.0)
+            isScan = false
+        }else{
+            self.navgationView!.backgroundColor=UIColor(red: 50/255, green: 167/255, blue: 152/255, alpha: 1.0)
+            sender.setTitle("   stop", forState: UIControlState.Normal)
+            isScan = true
+        }
+    }
+
     
     //2.检查运行这个App的设备是不是支持BLE。代理方法
     func centralManagerDidUpdateState(central: CBCentralManager) {
@@ -182,6 +191,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.manager.stopScan()
         self.peripheral = peripheral
         self.peripheral.delegate = self
+        self.peripheral.discoverServices(nil)
         
     }
     //5.请求周边去寻找它的服务所列出的特征
@@ -226,7 +236,21 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         print("didDiscoverCharacteristicsForService: \(service)")
         
     }
+    func colorChange(title:NSNotification)
+    {
+        let color = title.object as! UIColor;
+        let components = CGColorGetComponents(color.CGColor);
+        print(components[0],components[1],components[2]);
+        
+        let string = "C:\(Int(components[0]*255)),\(Int(components[0]*255)),\(Int(components[0]*255)),\(-1)\n"
+        let data = string.dataUsingEncoding(NSUTF8StringEncoding)
+        print(data);
+        peripheral.writeValue(data!, forCharacteristic: self.writeCharacteristic,type: CBCharacteristicWriteType.WithoutResponse)
+  
 
+    }
+
+    
     override func viewWillAppear(animated: Bool) {
         self.navigationController?.navigationBar.hidden = true
     }

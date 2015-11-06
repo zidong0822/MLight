@@ -92,9 +92,9 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(ctx, 2.0);
+    CGContextSetLineWidth(ctx, 1.0);
     CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-    CGContextAddEllipseInRect(ctx, CGRectInset(self.bounds, 2.0, 2.0));
+    CGContextAddEllipseInRect(ctx, CGRectInset(self.bounds, 1.0, 1.0));
     CGContextStrokePath(ctx);
     
 }
@@ -137,7 +137,7 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
         _imageDataLength = 0;
         
         _brightness = 1.0;
-        _knobSize = CGSizeMake(20, 20);
+        _knobSize = CGSizeMake(10, 10);
         _touchPoint = CGPointMake(self.bounds.size.width / 2.0, self.bounds.size.height / 2.0);
         
         ISColorKnob* knob = [[ISColorKnob alloc] init];
@@ -330,7 +330,35 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     
     [self updateKnob];
 }
-
+- (UIColor*)colorWithHexString:(NSString*)stringToConvert;
+{
+    NSString *cString = [[stringToConvert stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];//字符串处理
+    //例子，stringToConvert #ffffff
+    if ([cString hasPrefix:@"#"])
+        cString = [cString substringFromIndex:1];//去掉头
+    //分别取RGB的值
+    NSRange range;
+    range.location = 0;
+    range.length = 2;
+    NSString *rString = [cString substringWithRange:range];
+    
+    range.location = 2;
+    NSString *gString = [cString substringWithRange:range];
+    
+    range.location = 4;
+    NSString *bString = [cString substringWithRange:range];
+    
+    unsigned int r, g, b;
+    //NSScanner把扫描出的制定的字符串转换成Int类型
+    [[NSScanner scannerWithString:rString] scanHexInt:&r];
+    [[NSScanner scannerWithString:gString] scanHexInt:&g];
+    [[NSScanner scannerWithString:bString] scanHexInt:&b];
+    //转换为UIColor
+    return [UIColor colorWithRed:((float) r / 255.0f)
+                           green:((float) g / 255.0f)
+                            blue:((float) b / 255.0f)
+                           alpha:1.0f];
+}
 - (void)drawRect:(CGRect)rect
 {
     int width = self.bounds.size.width;
@@ -349,7 +377,7 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
         CGContextDrawImage(ctx, CGRectMake(center.x - _radius, center.y - _radius, _radius * 2.0, _radius * 2.0), _radialImage);
     }
     
-    CGContextSetLineWidth(ctx, 2.0);
+    CGContextSetLineWidth(ctx, 0.0);
     CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
     CGContextAddEllipseInRect(ctx, CGRectMake(center.x - _radius, center.y - _radius, _radius * 2.0, _radius * 2.0));
     CGContextStrokePath(ctx);
@@ -368,7 +396,7 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 {
     [self setTouchPoint:[[touches anyObject] locationInView:self]];
     
-    [_delegate colorWheelDidChangeColor:self];
+ //   [_delegate colorWheelDidChangeColor:self];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -377,7 +405,7 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     
     if (_continuous)
     {
-        [_delegate colorWheelDidChangeColor:self];
+       // [_delegate colorWheelDidChangeColor:self];
     }
 }
 

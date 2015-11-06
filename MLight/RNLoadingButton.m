@@ -101,7 +101,7 @@
         
     _loading = NO;
     _hideImageWhenLoading = YES;
-    _hideTextWhenLoading  = YES;
+    _hideTextWhenLoading  = NO;
     _activityIndicatorAlignment = RNLoadingButtonAlignmentCenter;
     _activityIndicatorEdgeInsets = UIEdgeInsetsZero;
     
