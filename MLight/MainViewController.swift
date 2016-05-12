@@ -18,6 +18,7 @@ class MainViewController: UIViewController,ISColorWheelDelegate{
     var brightnessSlider:UISlider?
     var wellView:UIView?
     var isOn:Bool = true
+    var bleMingle: BLEMingle!
     var audioRecorder:AVAudioRecorder!
     //定义音频的编码参数，这部分比较重要，决定录制音频文件的格式、音质、容量大小等，建议采用AAC的编码方式
     let recordSettings = [AVSampleRateKey : NSNumber(float: Float(44100.0)),//声音采样率
@@ -154,6 +155,12 @@ class MainViewController: UIViewController,ISColorWheelDelegate{
     }
 
     func showExpansion(sender: UIButton) {
+        
+        if(audioRecorder.recording){
+            audioRecorder.stop();
+        
+        }
+        
         let btn1 = ExButton(image: UIImage(named: "light")!, title: "",color:UIColor.whiteColor())
         let btn2 = ExButton(image: UIImage(named: "light")!, title: "",color:UIColor(red:0.95, green:0.86, blue:0.28, alpha:1))
         let btn3 = ExButton(image: UIImage(named: "music")!, title: "",color:UIColor(red:0.1, green:0.47, blue:0.73, alpha:1))
@@ -162,9 +169,9 @@ class MainViewController: UIViewController,ISColorWheelDelegate{
             switch tag
             {
             case 1:
-                 NSNotificationCenter.defaultCenter().postNotificationName("colorchange", object:self.colorWheel?.colorWithHexString("#ffffff"));
+                self.colorToData((self.colorWheel?.colorWithHexString("#ffffff"))!, avg:255);
             case 2:
-                  NSNotificationCenter.defaultCenter().postNotificationName("colorchange", object:self.colorWheel?.colorWithHexString("#ffdd6e"));
+                self.colorToData((self.colorWheel?.colorWithHexString("#ffdd6e"))!, avg:255);
             case 3:
                 self.startRecord();
             default:
@@ -177,14 +184,17 @@ class MainViewController: UIViewController,ISColorWheelDelegate{
     }
     
     func changeLight(sender:UIButton){
-    
+        if(audioRecorder.recording){
+            audioRecorder.stop();
+            
+        }
         if(isOn){
             sender.setImage(UIImage(named:"toggle_off"),forState:UIControlState.Normal);
-            NSNotificationCenter.defaultCenter().postNotificationName("colorchange", object:colorWheel?.colorWithHexString("#000000"));
+             colorToData((colorWheel?.colorWithHexString("#000000"))!, avg:255);
             isOn = false;
         }else{
            sender.setImage(UIImage(named:"toggle_on"),forState:UIControlState.Normal);
-            NSNotificationCenter.defaultCenter().postNotificationName("colorchange", object:colorWheel!.currentColor());
+            colorToData(colorWheel!.currentColor(), avg:255);
            isOn = true;
         }
         
@@ -192,42 +202,32 @@ class MainViewController: UIViewController,ISColorWheelDelegate{
     
     }
     
-    
     func changeBrightness(sender:UISlider){
-   
+        if(audioRecorder.recording){
+            audioRecorder.stop();
+        }
         colorWheel?.brightness = brightnessSlider!.value;
         wellView?.backgroundColor = colorWheel!.currentColor();
-        NSNotificationCenter.defaultCenter().postNotificationName("colorchange", object:colorWheel!.currentColor());
-        
-      //  startRecord();
+        colorToData((wellView?.backgroundColor)!, avg:255);
+       
     }
     
     func colorWheelDidChangeColor(colorWheel: ISColorWheel!) {
-        
-        print(colorWheel.currentColor());
+
         wellView?.backgroundColor = colorWheel!.currentColor();
-        NSNotificationCenter.defaultCenter().postNotificationName("colorchange", object:colorWheel!.currentColor());
+        colorToData(colorWheel!.currentColor(), avg:255);
+      
+       
     }
-    
-    
-    
     
     func doTimer(){
         let timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "timerFireMethod:", userInfo: nil, repeats:true);
         timer.fire()
     }
     func timerFireMethod(timer: NSTimer) {
-   
-        
-        print(audioRecorder.recording)
-        
-        audioRecorder.updateMeters();
 
+        audioRecorder.updateMeters();
         var  avg = audioRecorder.averagePowerForChannel(0);
-        
-        print(avg);
-        
-        
         let minValue = -60 as Float;
         let range = 60 as Float;
         let outRange = 100 as Float;
@@ -235,10 +235,22 @@ class MainViewController: UIViewController,ISColorWheelDelegate{
             avg = minValue;
         }
         let  decibels = (avg + range) / range * outRange;
-        
-        print(decibels);
+        let x = (decibels/70) * 255;
+        if(avg>=0){
+         colorToData(colorWheel!.currentColor(), avg:CGFloat(x));
+        }
+       
         
     }
+    
+    func colorToData(color:UIColor,avg:CGFloat){
+        let components = CGColorGetComponents(color.CGColor);
+        let heartRate: NSString = "C:\((Int)(components[0]*avg)),\((Int)(components[1]*avg)),\((Int)(components[2]*avg)),-1\n"
+        let dataValue: NSData = heartRate.dataUsingEncoding(NSUTF8StringEncoding)!
+        bleMingle.writeValue(dataValue);
+    
+    }
+    
     func  goBack(sender:UIButton){
     
         self.navigationController?.popViewControllerAnimated(true)

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		B9CC2FC71BEB3F8700342C04 /* ExButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CC2FC61BEB3F8700342C04 /* ExButtonView.swift */; };
+		B9CC2FD01BEC9D2900342C04 /* BLECentralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CC2FCD1BEC9D2900342C04 /* BLECentralDelegate.swift */; };
+		B9CC2FD11BEC9D2900342C04 /* YHAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CC2FCE1BEC9D2900342C04 /* YHAlertController.swift */; };
+		B9CC2FD21BEC9D2900342C04 /* BLEHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CC2FCF1BEC9D2900342C04 /* BLEHelper.swift */; };
 		E2C574D61BEA208A00E29784 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C574D51BEA208A00E29784 /* AppDelegate.swift */; };
 		E2C574D81BEA208A00E29784 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C574D71BEA208A00E29784 /* ViewController.swift */; };
 		E2C574DB1BEA208A00E29784 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2C574D91BEA208A00E29784 /* Main.storyboard */; };
@@ -20,6 +23,9 @@
 
 /* Begin PBXFileReference section */
 		B9CC2FC61BEB3F8700342C04 /* ExButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExButtonView.swift; sourceTree = "<group>"; };
+		B9CC2FCD1BEC9D2900342C04 /* BLECentralDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLECentralDelegate.swift; sourceTree = "<group>"; };
+		B9CC2FCE1BEC9D2900342C04 /* YHAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YHAlertController.swift; sourceTree = "<group>"; };
+		B9CC2FCF1BEC9D2900342C04 /* BLEHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEHelper.swift; sourceTree = "<group>"; };
 		E2C574D21BEA208A00E29784 /* MLight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2C574D51BEA208A00E29784 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E2C574D71BEA208A00E29784 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -46,6 +52,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B9CC2FD31BEC9D3500342C04 /* ISColorWheel */ = {
+			isa = PBXGroup;
+			children = (
+				E2C574E81BEA20FA00E29784 /* ISColorWheel.h */,
+				E2C574E91BEA20FA00E29784 /* ISColorWheel.m */,
+			);
+			name = ISColorWheel;
+			sourceTree = "<group>";
+		};
+		B9CC2FD41BEC9D4700342C04 /* RNLoadingButton */ = {
+			isa = PBXGroup;
+			children = (
+				E2C574ED1BEA210500E29784 /* RNLoadingButton.h */,
+				E2C574EE1BEA210500E29784 /* RNLoadingButton.m */,
+			);
+			name = RNLoadingButton;
+			sourceTree = "<group>";
+		};
+		B9CC2FD51BEC9D6200342C04 /* BLEHelper */ = {
+			isa = PBXGroup;
+			children = (
+				B9CC2FCD1BEC9D2900342C04 /* BLECentralDelegate.swift */,
+				B9CC2FCF1BEC9D2900342C04 /* BLEHelper.swift */,
+			);
+			name = BLEHelper;
+			sourceTree = "<group>";
+		};
 		E2C574C91BEA208900E29784 = {
 			isa = PBXGroup;
 			children = (
@@ -65,10 +98,10 @@
 		E2C574D41BEA208A00E29784 /* MLight */ = {
 			isa = PBXGroup;
 			children = (
-				E2C574E81BEA20FA00E29784 /* ISColorWheel.h */,
-				E2C574E91BEA20FA00E29784 /* ISColorWheel.m */,
-				E2C574ED1BEA210500E29784 /* RNLoadingButton.h */,
-				E2C574EE1BEA210500E29784 /* RNLoadingButton.m */,
+				B9CC2FD51BEC9D6200342C04 /* BLEHelper */,
+				B9CC2FD41BEC9D4700342C04 /* RNLoadingButton */,
+				B9CC2FD31BEC9D3500342C04 /* ISColorWheel */,
+				B9CC2FCE1BEC9D2900342C04 /* YHAlertController.swift */,
 				B9CC2FC61BEB3F8700342C04 /* ExButtonView.swift */,
 				E2C574EA1BEA20FA00E29784 /* MainViewController.swift */,
 				E2C574D51BEA208A00E29784 /* AppDelegate.swift */,
@@ -157,9 +190,12 @@
 				E2C574D81BEA208A00E29784 /* ViewController.swift in Sources */,
 				E2C574EB1BEA20FA00E29784 /* ISColorWheel.m in Sources */,
 				E2C574D61BEA208A00E29784 /* AppDelegate.swift in Sources */,
+				B9CC2FD21BEC9D2900342C04 /* BLEHelper.swift in Sources */,
 				B9CC2FC71BEB3F8700342C04 /* ExButtonView.swift in Sources */,
+				B9CC2FD01BEC9D2900342C04 /* BLECentralDelegate.swift in Sources */,
 				E2C574EC1BEA20FA00E29784 /* MainViewController.swift in Sources */,
 				E2C574EF1BEA210500E29784 /* RNLoadingButton.m in Sources */,
+				B9CC2FD11BEC9D2900342C04 /* YHAlertController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

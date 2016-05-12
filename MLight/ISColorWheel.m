@@ -396,6 +396,8 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 {
     [self setTouchPoint:[[touches anyObject] locationInView:self]];
     
+    
+    
  //   [_delegate colorWheelDidChangeColor:self];
 }
 

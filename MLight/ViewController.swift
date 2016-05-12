@@ -8,29 +8,35 @@
 
 import UIKit
 import CoreBluetooth
-class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,CBCentralManagerDelegate,CBPeripheralDelegate{
+class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,BLECentralDelegate{
 
     var navgationView:UIView?
     var tableView : UITableView?
     var isScan:Bool = true
-    var manager: CBCentralManager!
-    var peripheral: CBPeripheral!
-    var writeCharacteristic: CBCharacteristic!
+    var bleMingle: BLEMingle!
     //保存收到的蓝牙设备
     var deviceList:NSMutableArray = NSMutableArray()
-    var peripheralList:NSMutableArray = NSMutableArray()
-    //服务和特征的UUID
-    let kServiceUUID = [CBUUID(string:"FFF0")]
-    let kCharacteristicUUID = [CBUUID(string:"FFF6")]
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.blackColor()
-        self.manager = CBCentralManager(delegate: self, queue: nil)
         initNavgationView();
         initTableView();
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "colorChange:", name: "colorchange", object: nil)
+        
+        bleMingle = BLEMingle()
+        bleMingle.delegate = self;
+        // 创建目标队列
+        let workingQueue = dispatch_queue_create("my_queue", nil)
+        
+        // 派发到刚创建的队列中，GCD 会负责进行线程调度
+        dispatch_async(workingQueue) {
+            NSThread.sleepForTimeInterval(2)  // 模拟两秒的执行时间
+            dispatch_async(dispatch_get_main_queue()) {
+                self.bleMingle.startScan()
+            }
+        }
+
     }
 
     
@@ -59,7 +65,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         //scanButton.hideTextWhenLoading = false
         //scanButton.hideImageWhenLoading = true
         scanButton.setActivityIndicatorAlignment(RNLoadingButtonAlignmentLeft);
-        scanButton.addTarget(self, action:"scanBlueTooth:", forControlEvents: UIControlEvents.TouchUpInside)
+        scanButton.addTarget(self, action:#selector(scanBlueTooth), forControlEvents: UIControlEvents.TouchUpInside)
         scanButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
         self.view.addSubview(scanButton);
         
@@ -117,18 +123,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
-                let  peripheral = self.deviceList.objectAtIndex(indexPath.row) as!CBPeripheral
-        
-                if(self.peripheralList.containsObject(self.deviceList.objectAtIndex(indexPath.row))){
-                    self.peripheralList.removeObject(self.deviceList.objectAtIndex(indexPath.row))
-                    self.manager.cancelPeripheralConnection(peripheral);
-                    print("蓝牙已断开！")
-                }else{
-                    self.peripheralList.addObject(self.deviceList.objectAtIndex(indexPath.row))
-                    self.manager.connectPeripheral(peripheral, options: nil);
-                    print("蓝牙已连接！ \(self.peripheralList.count)")
-                }
-                self.navigationController?.pushViewController(MainViewController(), animated: true);
+        let  peripheral = self.deviceList.objectAtIndex(indexPath.row) as!CBPeripheral
+        let mainViewController = MainViewController()
+        mainViewController.bleMingle = bleMingle;
+        bleMingle.connectPeripheral(peripheral);
+        self.navigationController?.pushViewController(mainViewController, animated: true);
         
     }
     //行高度
@@ -151,102 +150,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             isScan = true
         }
     }
-
-    
-    //2.检查运行这个App的设备是不是支持BLE。代理方法
-    func centralManagerDidUpdateState(central: CBCentralManager) {
-        switch central.state {
-        case CBCentralManagerState.PoweredOn:
-            self.manager.scanForPeripheralsWithServices(nil, options:[CBCentralManagerScanOptionAllowDuplicatesKey: false])
-            print("蓝牙已打开,请扫描外设")
-        case CBCentralManagerState.Unauthorized:
-            print("这个应用程序是无权使用蓝牙低功耗")
-        case CBCentralManagerState.PoweredOff:
-            print("蓝牙目前已关闭")
-        default:
-            print("中央管理器没有改变状态")
-        }
-        
-    }
-    //3.查到外设后，停止扫描，连接设备
-    //广播、扫描的响应数据保存在advertisementData 中，可以通过CBAdvertisementData 来访问它。
-    func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber){
-        print(peripheral)
+    func didDiscoverPeripheral(peripheral: CBPeripheral!){
+       
         if(!self.deviceList.containsObject(peripheral)){
             self.deviceList.addObject(peripheral)
             self.tableView?.reloadData();
             
         }
-        
-    }
-    //连接外设失败
-    func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
-        
-    }
-    //4.连接外设成功，开始发现服务
-    func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
-        
-        print("连接到设备: \(peripheral)")
-        //停止扫描外设
-        self.manager.stopScan()
-        self.peripheral = peripheral
-        self.peripheral.delegate = self
-        self.peripheral.discoverServices(nil)
-        
-    }
-    //5.请求周边去寻找它的服务所列出的特征
-    func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?){
-        if error != nil {
-            print("错误的服务特征:\(error!.localizedDescription)")
-            return
-        }
-        var i: Int = 0
-        for service in peripheral.services! {
-            print("服务的UUID:\(service.UUID)")
-            i++
-            //发现给定格式的服务的特性
-            if (service.UUID == CBUUID(string:"FFF0")) {
-                peripheral.discoverCharacteristics(kCharacteristicUUID, forService: service as CBService)
-            }
-            peripheral.discoverCharacteristics(nil, forService: service as CBService)
-        }
-    }
-    //6.已搜索到Characteristics
-    func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
-        print("发现特征的服务:\(service.UUID.data)   ==  服务UUID:\(service.UUID)")
-        if (error != nil){
-            print("发现错误的特征：\(error!.localizedDescription)")
-            return
-        }
-        
-        for  characteristic in service.characteristics!  {
-            //罗列出所有特性，看哪些是notify方式的，哪些是read方式的，哪些是可写入的。
-            print("服务UUID:\(service.UUID)         特征UUID:\(characteristic.UUID)")
-            //特征的值被更新，用setNotifyValue:forCharacteristic
-            switch characteristic.UUID.description {
-            case "FFF6":
-                self.peripheral.readValueForCharacteristic(characteristic as CBCharacteristic)
-                self.writeCharacteristic = characteristic
-                
-            default:
-                break
-            }
-        }
-        
-        print("didDiscoverCharacteristicsForService: \(service)")
-        
-    }
-    func colorChange(title:NSNotification)
-    {
-        let color = title.object as! UIColor;
-        let components = CGColorGetComponents(color.CGColor);
-        print(components[0],components[1],components[2]);
-        
-        let string = "C:\(Int(components[0]*255)),\(Int(components[0]*255)),\(Int(components[0]*255)),\(-1)\n"
-        let data = string.dataUsingEncoding(NSUTF8StringEncoding)
-        print(data);
-        peripheral.writeValue(data!, forCharacteristic: self.writeCharacteristic,type: CBCharacteristicWriteType.WithoutResponse)
-  
 
     }
 
@@ -257,7 +167,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+       
     }
 
     
